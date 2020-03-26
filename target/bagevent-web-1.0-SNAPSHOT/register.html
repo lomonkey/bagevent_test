@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>登录页面</title>
+    <link rel="icon" href="../assets/img/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="css/webbase.css"/>
+    <link rel="stylesheet" type="text/css" href="css/pages-login-manage.css"/>
+
+    <style>
+        .red{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div class="loginmanage">
+        <div class="py-container">
+            <h4 class="manage-title">注册</h4>
+            <div class="loginform">
+
+                <ul class="sui-nav nav-tabs tab-wraped">
+                    <li class="active">
+                        <a href="#profile" data-toggle="tab">
+                            <h3>账户注册</h3>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content tab-wraped">
+                    <div id="index" class="tab-pane">
+                        <p>二维码登录，暂为官网二维码</p>
+                        <img src="../img/wx_cz.jpg"/>
+                    </div>
+                    <div id="profile" class="tab-pane  active">
+                        <form class="sui-form" id="registerForm">
+                            <div class="input-prepend"><span class="add-on loginname"></span>
+                                <input id="userName" @blur="validateName()" v-model="user.userName" type="text" name="userName"
+                                       placeholder="用户名" class="span2 input-xfat">
+
+                            </div>
+							<div class="red">{{errorUserName}}</div>
+                            <div class="input-prepend"><span class="add-on loginname"></span>
+                                <input id="email" @blur="validateEmail()" type="text" v-model="user.email" name="email" placeholder="邮箱"
+                                       class="span2 input-xfat">
+                            </div>
+                            <div class="red">{{errorEmail}}</div>
+                            <div class="input-prepend"><span class="add-on loginname"></span>
+                                <input id="cellphone" @blur="validatePhone()" type="text" v-model="user.cellphone" name="cellphone"
+                                       placeholder="电话"
+                                       class="span2 input-xfat">
+                            </div>
+                            <div class="red">{{errorCellphone}}</div>
+                            <div class="input-prepend"><span class="add-on loginpwd"></span>
+                                <input id="password" type="text" v-model="user.password" name="password"
+                                       placeholder="密码" class="span2 input-xfat">
+                            </div>
+                            <div class="red">{{errorPassword}}</div>
+                            <div class="input-prepend"><span class="add-on loginpwd"></span>
+                                <input id="surePassword" @blur="validatePassword()" type="password" v-model="user.surePassword" name="surePassword"
+                                       placeholder="确认密码"
+                                       class="span2 input-xfat">
+                            </div>
+                            <div class="red">{{errorPassword}}</div>
+
+                            <div class="logined">
+                                <a class="sui-btn btn-block btn-xlarge btn-danger" v-on:click="register()"
+                                   href="javascript:void(0);">注册</a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    <!--foot-->
+    <div class="py-container copyright">
+        <ul>
+            <li>关于我们</li>
+            <li>联系我们</li>
+            <li>联系客服</li>
+            <li>商家入驻</li>
+            <li>营销中心</li>
+            <li>手机品优购</li>
+            <li>销售联盟</li>
+            <li>品优购社区</li>
+        </ul>
+        <div class="address">地址：北京市昌平区建材城西路金燕龙办公楼一层 邮编：100096 电话：400-618-4000 传真：010-82935100</div>
+        <div class="beian">京ICP备08001421号京公网安备110108007702
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery-placeholder/jquery.placeholder.min.js"></script>
+<script src="js/pages/jquery.slideunlock.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            user: {
+            	userName: '',
+				email: '',
+				cellphone: '',
+            	password: '',
+				surePassword: ''
+			},
+			errorUserName: '',
+            errorEmail: '',
+            errorCellphone: '',
+            errorPassword: '',
+
+
+		},
+        methods: {
+            // 校验用户名
+            // 就是这个函数
+			validateName(){
+				if (this.user.userName.length <= 3 || this.user.userName.length >= 19) {
+					this.errorUserName = "用户名只能在4~18位之间";
+					return false;
+				} else {
+					// 后端发送请求
+					axios.get('/user/findByUserName.shtml?userName='+ this.user.userName).then(({data})=> {
+						// 用户存在
+                        if (data.code === 200) {
+                            this.errorUserName = data.message;
+                            return false;
+                        } else {
+                            this.errorUserName = "";
+                            return true;
+                        }
+					}).catch((error)=> {
+						console.log(error);
+                        return false;
+					});
+                    return false;
+				}
+			},
+            // 验证邮箱
+            validateEmail(){
+                if (this.user.email !== "") {
+                    let reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+                    isok= reg.test(this.user.email);
+                    if (!isok) {
+                        this.errorEmail = "邮箱格式不正确!";
+                        return false;
+                    } else {
+                        this.errorEmail = "";
+                        return true;
+                    }
+                }
+            },
+            // 验证电话
+            validatePhone(){
+                if (this.user.cellphone !== "") {
+                    let reg = /^1[35678]\d{9}$/;
+                    isok = reg.test(this.user.cellphone);
+                    if (!isok) {
+                        this.errorCellphone = "手机格式不正确!";
+                        return false;
+                    } else {
+                        this.errorCellphone = "";
+                        return true;
+                    }
+                } else {
+                    this.errorCellphone = "手机号码不能为空!";
+                    return false;
+                }
+            },
+            // 验证密码
+            validatePassword(){
+                let password = this.user.password;
+                let surePassword = this.user.surePassword;
+                if (password !== "" && surePassword !== "") {
+                    if (password === surePassword) {
+                        this.errorPassword = "";
+                        return true;
+                    } else {
+                        this.errorPassword = "密码不一致!";
+                        return false;
+                    }
+                } else {
+                    this.errorPassword = "密码和确认密码不能为空!";
+                    return false;
+                }
+
+            },
+            // 注册
+            register(){
+                this.validateName();
+                this.validateEmail();
+                this.validatePhone();
+                this.validatePassword();
+            	// 前端校验表单值合法
+                if (this.errorUserName==='' && this.errorEmail==='' && this.errorCellphone==='' && this.errorPassword==='') {
+                    console.log("验证通过!");
+                    // 后端发送请求
+                    axios.post('/user/register.shtml', this.user).then(({data})=> {
+                        if (data.code === 200) {
+                            alert("注册成功!");
+                            window.location.href = "login.html";
+                        } else {
+                            alert(data.message);
+                        }
+                    }).catch((error)=> {
+                        console.log(error);
+                    });
+                }
+
+            }
+        }
+    })
+</script>
+
+<script>
+    $(function () {
+        var slider = new SliderUnlock("#slider", {
+            successLabelTip: "欢迎访问品优购"
+        }, function () {
+            // alert("验证成功,即将跳转至首页");
+            // window.location.href="index.html"
+        });
+        slider.init();
+    })
+</script>
+</body>
+
+</html>

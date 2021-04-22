@@ -13,7 +13,7 @@
         <mapper.version>4.1.5</mapper.version>
         <fastjson.version>1.2.44</fastjson.version>
         <spring.version>4.3.12.RELEASE</spring.version>
-        <mybatis.version>3.4.5</mybatis.version>
+        <mybatis.version>3.5.6</mybatis.version>
         <pagehelper.version>5.1.2</pagehelper.version>
         <junit.version>4.12</junit.version>
         <lombok.version>1.18.6</lombok.version>

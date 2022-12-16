@@ -12,7 +12,7 @@
         <mysql.version>8.0.16</mysql.version>
         <mapper.version>4.1.5</mapper.version>
         <fastjson.version>1.2.44</fastjson.version>
-        <spring.version>4.3.12.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
         <mybatis.version>3.4.5</mybatis.version>
         <pagehelper.version>5.1.2</pagehelper.version>
         <junit.version>4.12</junit.version>
